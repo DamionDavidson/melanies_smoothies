@@ -62,4 +62,12 @@ if ingredients_list and name_on_order:  # proceed only if user filled both
 elif ingredients_list and not name_on_order:
     st.warning("Please enter a name for your Smoothie before submitting!")
 
+# New section to display smoothiefroot nutrition information
+import requests
+smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
+st.text(smoothiefroot_response)
+
+
+
+
 
