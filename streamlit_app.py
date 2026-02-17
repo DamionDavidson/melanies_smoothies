@@ -25,7 +25,7 @@ session = cnx.session()
 # Get fruit list from Snowflake table
 fruit_df = session.table("smoothies.public.fruit_options").select(col("fruit_name"),col('search_on'))
 fruit_rows = fruit_df.collect()
-fruit_list = [row["search_on"] for row in fruit_rows]
+fruit_list = [row["fruit_name"] for row in fruit_rows]
 
 
 # Multiselect for ingredients
