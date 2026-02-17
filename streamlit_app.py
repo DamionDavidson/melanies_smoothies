@@ -62,7 +62,7 @@ if ingredients_list and name_on_order:
 
         if not filtered.empty:
             search_on = filtered.iloc[0]
-            st.write('The search value for', fruit_name, 'is', search_on)
+            st.write('The search value for', fruit_chosen, 'is', search_on)
 
             smoothiefroot_response = requests.get(
                 "https://my.smoothiefroot.com/api/fruit/" + search_on
