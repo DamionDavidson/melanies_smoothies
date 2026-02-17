@@ -45,28 +45,38 @@ ingredients_list = st.multiselect(
 # -------------------------
 # Insert order into Snowflake
 # -------------------------
-if ingredients_list and name_on_order:  # proceed only if user filled both
+
+if ingredients_list and name_on_order:
+
     ingredients_string = " ".join(ingredients_list)
 
     for fruit_chosen in ingredients_list:
-        ingredients_string += fruit_chosen + ' '
-        st.subheader(fruit_chosen + " " + 'Nutrition Information')
 
-filtered = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON']
+        st.subheader(f"{fruit_chosen} Nutrition Information")
 
-if not filtered.empty:
-    search_on = filtered.iloc[0]
-    st.write('The search value for', fruit_chosen, 'is', search_on, '.')
-else:
-    st.write('No matching fruit found for', fruit_chosen)
+        # Match on SEARCH_ON since that's what your multiselect uses
+        filtered = pd_df.loc[
+            pd_df['SEARCH_ON'] == fruit_chosen,
+            'SEARCH_ON'
+        ]
 
-    smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/" + fruit_chosen)
-    sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
+        if not filtered.empty:
+            search_on = filtered.iloc[0]
+            st.write('The search value for', fruit_chosen, 'is', search_on)
+
+            smoothiefroot_response = requests.get(
+                "https://my.smoothiefroot.com/api/fruit/" + search_on
+            )
+
+            st.dataframe(
+                data=smoothiefroot_response.json(),
+                use_container_width=True
+            )
+
+        else:
+            st.write('No matching fruit found for', fruit_chosen)
 
     if st.button("Submit Order"):
-        # Insert into Snowflake safely using parameter binding
-        # ORDER_UID is numeric auto-generated
-        # ORDER_TS uses column default CURRENT_TIMESTAMP
         session.sql(
             """
             INSERT INTO smoothies.public.orders (
@@ -76,17 +86,16 @@ else:
             ) VALUES (?, ?, ?)
             """,
             params=[
-                False,              # ORDER_FILLED
-                name_on_order,      # NAME_ON_ORDER
-                ingredients_string  # INGREDIENTS
+                False,
+                name_on_order,
+                ingredients_string
             ]
         ).collect()
 
         st.success(f"Your Smoothie is ordered, {name_on_order}!", icon="✅")
 
-    elif ingredients_list and not name_on_order:
-        st.warning("Please enter a name for your Smoothie before submitting!")
-
+elif ingredients_list and not name_on_order:
+    st.warning("Please enter a name for your Smoothie before submitting!")
 
 
 
