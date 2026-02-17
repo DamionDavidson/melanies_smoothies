@@ -84,7 +84,7 @@ else:
         st.success(f"Your Smoothie is ordered, {name_on_order}!", icon="✅")
 
     elif ingredients_list and not name_on_order:
-    st.warning("Please enter a name for your Smoothie before submitting!")
+        st.warning("Please enter a name for your Smoothie before submitting!")
 
 
 
