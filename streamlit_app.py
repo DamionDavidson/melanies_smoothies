@@ -56,7 +56,7 @@ if ingredients_list and name_on_order:
 
         # Match on SEARCH_ON since that's what your multiselect uses
         filtered = pd_df.loc[
-            pd_df['SEARCH_ON'] == fruit_chosen,fruit_name
+            pd_df['SEARCH_ON'] == fruit_chosen,fruit_name,
             'SEARCH_ON'
         ]
 
