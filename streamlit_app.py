@@ -36,9 +36,9 @@ ingredients_list = st.multiselect(
     max_selections=5
 )
 st.stop()
-# -------------------------
+
 # Insert order into Snowflake
-# -------------------------
+
 if ingredients_list and name_on_order:  # proceed only if user filled both
     ingredients_string = " ".join(ingredients_list)
 
