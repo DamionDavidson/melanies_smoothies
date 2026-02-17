@@ -30,8 +30,8 @@ fruit_rows = fruit_df.collect()
 fruit_list = [row["SEARCH_ON"] for row in fruit_rows]
 
 # Convert the Snowpark Dataframe to a Pandas Dataframe so we can use the LOC funtion
-pd_df=fruit_df.to_pandas()
-#st.dataframe(pd_df)
+#pd_df=fruit_df.to_pandas()
+st.dataframe(pd_df)
 
 
 # Multiselect for ingredients
