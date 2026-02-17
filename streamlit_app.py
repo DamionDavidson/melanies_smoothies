@@ -3,6 +3,8 @@
 # -------------------------
 import streamlit as st
 from snowflake.snowpark.functions import col
+import requests
+
 
 # -------------------------
 # Streamlit UI
@@ -38,6 +40,9 @@ ingredients_list = st.multiselect(
 if ingredients_list and name_on_order:  # proceed only if user filled both
     ingredients_string = " ".join(ingredients_list)
 
+    smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
+    sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
+
     if st.button("Submit Order"):
         # Insert into Snowflake safely using parameter binding
         # ORDER_UID is numeric auto-generated
@@ -62,11 +67,7 @@ if ingredients_list and name_on_order:  # proceed only if user filled both
 elif ingredients_list and not name_on_order:
     st.warning("Please enter a name for your Smoothie before submitting!")
 
-# New section to display smoothiefroot nutrition information
-import requests
-smoothiefroot_response = requests.get("https://my.smoothiefroot.com/api/fruit/watermelon")
-# st.text(smoothiefroot_response.json())
-sf_df = st.dataframe(data=smoothiefroot_response.json(), use_container_width=True)
+
 
 
 
