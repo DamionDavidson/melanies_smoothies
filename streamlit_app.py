@@ -51,7 +51,7 @@ if ingredients_list and name_on_order:  # proceed only if user filled both
         ingredients_string += fruit_chosen + ' '
         st.subheader(fruit_chosen + " " + 'Nutrition Information')
 
-   filtered = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON']
+filtered = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON']
 
    if not filtered.empty:
         search_on = filtered.iloc[0]
