@@ -50,19 +50,19 @@ if ingredients_list and name_on_order:
 
     ingredients_string = " ".join(ingredients_list)
 
-    for fruit_chosen in ingredients_list:
+    for fruit_name in ingredients_list:
 
-        st.subheader(f"{fruit_chosen} Nutrition Information")
+        st.subheader(f"{fruit_name} Nutrition Information")
 
         # Match on SEARCH_ON since that's what your multiselect uses
         filtered = pd_df.loc[
-            pd_df['SEARCH_ON'] == fruit_chosen,
+            pd_df['SEARCH_ON'] == fruit_name,
             'SEARCH_ON'
         ]
 
         if not filtered.empty:
             search_on = filtered.iloc[0]
-            st.write('The search value for', fruit_chosen, 'is', search_on)
+            st.write('The search value for', fruit_name, 'is', search_on)
 
             smoothiefroot_response = requests.get(
                 "https://my.smoothiefroot.com/api/fruit/" + search_on
@@ -74,7 +74,7 @@ if ingredients_list and name_on_order:
             )
 
         else:
-            st.write('No matching fruit found for', fruit_chosen)
+            st.write('No matching fruit found for', fruit_name)
 
     if st.button("Submit Order"):
         session.sql(
