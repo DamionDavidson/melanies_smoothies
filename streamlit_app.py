@@ -25,8 +25,8 @@ session = cnx.session()
 # Get fruit list from Snowflake table
 fruit_df = session.table("smoothies.public.fruit_options").select(col("fruit_name"),col('SEARCH_ON'))
 fruit_rows = fruit_df.collect()
-fruit_list = [row["FRUIT_NAME"] for row in fruit_rows]
-st.stop()
+fruit_list = [row["SEARCH_ON"] for row in fruit_rows]
+
 
 
 
