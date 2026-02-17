@@ -45,6 +45,7 @@ ingredients_list = st.multiselect(
 # -------------------------
 # Insert order into Snowflake
 # -------------------------
+fruit_chosen = fruit_name()
 
 if ingredients_list and name_on_order:
 
