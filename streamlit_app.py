@@ -52,7 +52,7 @@ if ingredients_list and name_on_order:
 
     for fruit_name in ingredients_list:
 
-        st.subheader(f"{search_on} Nutrition Information")
+        st.subheader(f"{"SEARCH_ON"} Nutrition Information")
 
         # Match on SEARCH_ON since that's what your multiselect uses
         filtered = pd_df.loc[
