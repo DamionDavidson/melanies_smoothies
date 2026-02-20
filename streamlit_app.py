@@ -27,7 +27,7 @@ session = cnx.session()
 # Get fruit list from Snowflake table
 fruit_df = session.table("smoothies.public.fruit_options").select(col("fruit_name"),col('SEARCH_ON'))
 fruit_rows = fruit_df.collect()
-fruit_list = [row["FRUIT_NAME"] for row in fruit_rows]
+fruit_list = [row["SEARCH_ON"] for row in fruit_rows]
 
 # Convert the Snowpark Dataframe to a Pandas Dataframe so we can use the LOC funtion
 #pd_df=fruit_df.to_pandas()
