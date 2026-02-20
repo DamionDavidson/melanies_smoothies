@@ -7,7 +7,6 @@ import pandas as pd
 import requests
 
 
-
 # -------------------------
 # Streamlit UI
 # -------------------------
@@ -25,20 +24,20 @@ cnx = st.connection("snowflake")
 session = cnx.session()
 
 # Get fruit list from Snowflake table
-fruit_df = session.table("smoothies.public.fruit_options").select(col("fruit_name"),col('SEARCH_ON'))
-fruit_rows = fruit_df.collect()
-fruit_list = [row["SEARCH_ON"] for row in fruit_rows]
+fruit_df = session.table("smoothies.public.fruit_options") \
+    .select(col("FRUIT_NAME"), col("SEARCH_ON"))
 
-# Convert the Snowpark Dataframe to a Pandas Dataframe so we can use the LOC funtion
-#pd_df=fruit_df.to_pandas()
-pd_df=fruit_df.to_pandas()
-#st.dataframe(pd_df)
+pd_df = fruit_df.to_pandas()
 
+# Create mapping dictionary (FRUIT_NAME -> SEARCH_ON)
+fruit_map = dict(zip(pd_df["FRUIT_NAME"], pd_df["SEARCH_ON"]))
 
-# Multiselect for ingredients
+# Multiselect shows ONLY FRUIT_NAME
+fruit_display_list = pd_df["FRUIT_NAME"].tolist()
+
 ingredients_list = st.multiselect(
     "Choose up to 5 ingredients:",
-    fruit_list,
+    fruit_display_list,
     max_selections=5
 )
 
@@ -50,31 +49,28 @@ if ingredients_list and name_on_order:
 
     ingredients_string = " ".join(ingredients_list)
 
-    for fruit_name in ingredients_list:
+    for fruit in ingredients_list:
 
-        st.subheader(f"{fruit_name} Nutrition Information")
+        # Get SEARCH_ON value behind the scenes
+        search_on = fruit_map.get(fruit)
 
-        # Match on SEARCH_ON since that's what your multiselect uses
-        filtered = pd_df.loc[
-            pd_df['SEARCH_ON'] == fruit_name,
-        'SEARCH_ON'
-        ]
+        st.subheader(f"{fruit} Nutrition Information")
 
-        if not filtered.empty:
-            search_on = filtered.iloc[0]
-            st.write('The search value for', fruit_name, 'is', search_on)
-
-            smoothiefroot_response = requests.get(
-                "https://my.smoothiefroot.com/api/fruit/" + search_on
+        try:
+            response = requests.get(
+                f"https://my.smoothiefroot.com/api/fruit/{search_on}"
             )
 
-            st.dataframe(
-                data=smoothiefroot_response.json(),
-                use_container_width=True
-            )
+            if response.status_code == 200:
+                st.dataframe(
+                    data=response.json(),
+                    use_container_width=True
+                )
+            else:
+                st.error(f"API returned status {response.status_code}")
 
-        else:
-            st.write('No matching fruit found for', fruit_name)
+        except Exception as e:
+            st.error(f"Error calling API: {e}")
 
     if st.button("Submit Order"):
         session.sql(
