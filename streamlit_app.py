@@ -47,7 +47,7 @@ ingredients_list = st.multiselect(
 
 if ingredients_list and name_on_order:
 
-    ingredients_string = " ".join(ingredients_list)
+    ingredients_string = "".join(ingredients_list)
 
     for fruit in ingredients_list:
 
