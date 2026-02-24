@@ -84,7 +84,7 @@ if ingredients_list and name_on_order:
             params=[
                 False,
                 name_on_order,
-                ingredients_list
+                ingredients_string
             ]
         ).collect()
 
